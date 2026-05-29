@@ -56,15 +56,15 @@ class ArticuloUpdateSchema(BaseModel):
 
 articulos = [
     {"id": 1, "nombre": "Cuaderno A4", "precio": 2500, "activo": True},
-    {"id": 2, "nombre": "Bolígrafo Azul", "precio": 1500, "activo": True},
-    {"id": 3, "nombre": "Marcador Resaltador", "precio": 1800, "activo": True},
+    {"id": 2, "nombre": "Lapicera Azul", "precio": 1500, "activo": True},
+    {"id": 3, "nombre": "Resaltador", "precio": 1800, "activo": True},
     {"id": 4, "nombre": "Goma de Borrar", "precio": 600, "activo": True},
-    {"id": 5, "nombre": "Tijeras de Mano", "precio": 3500, "activo": True},
+    {"id": 5, "nombre": "Tijera 12cm", "precio": 3500, "activo": True},
     {"id": 6, "nombre": "Regla de 30cm", "precio": 1200, "activo": True},
-    {"id": 7, "nombre": "Lápiz de Grafito", "precio": 800, "activo": True},
-    {"id": 8, "nombre": "Estuche para lápices", "precio": 3500, "activo": True},
+    {"id": 7, "nombre": "Lápiz Negro", "precio": 800, "activo": True},
+    {"id": 8, "nombre": "Cartuchera", "precio": 3500, "activo": True},
     {"id": 9, "nombre": "Calculadora Científica", "precio": 15000, "activo": True},
-    {"id": 10, "nombre": "Archivador", "precio": 4500, "activo": True},
+    {"id": 10, "nombre": "Bibliorato", "precio": 4500, "activo": True},
 ]
 
 @app.get("/articulos", response_model=list[ArticuloSchema])
