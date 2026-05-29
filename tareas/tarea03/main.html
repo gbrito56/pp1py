@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Frontend + FastAPI</title>
+  <title>API Libreria</title>
 
   <style>
     body {
@@ -13,7 +13,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      height: 100%;
       margin: 0;
     }
 
@@ -22,8 +22,12 @@
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      text-align: center;
-      width: 350px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 auto;
+      box-sizing: border-box;
     }
 
     button {
@@ -52,27 +56,56 @@
   </style>
 </head>
 <body>
+  <header>
+    <h1>Librería</h1>
+  </header>
 
   <div class="container">
-    <h2>Consumir API FastAPI</h2>
+    <h2>Articulos disponibles</h2>
 
-    <button onclick="llamarAPI()">
-      Llamar API
+    <button onclick="listarArticulos()">
+      Mostrar Artículos
     </button>
 
+    <h2>Crear artículo</h2>
+    <input type="text" id="nombreNuevo" placeholder="Nombre" />
+    <input type="number" id="precioNuevo" placeholder="Precio (>=500)" />
+    <label>
+      <input type="checkbox" id="activoNuevo" checked /> Activo
+    </label>
+    <button onclick="crearArticulo()">Crear</button>
+
+    <h2>Borrar artículo</h2>
+    <input type="number" id="idBorrar" placeholder="ID" />
+    <label>
+      <input type="checkbox" id="logicoBorrar" /> Lógico (desactivar)
+    </label>
+    <button onclick="borrarArticulo()">Borrar</button>
+
+    <h2>Editar artículo</h2>
+    <input type="number" id="idEditar" placeholder="ID" />
+    <input type="text" id="nombreEditar" placeholder="Nuevo nombre" />
+    <input type="number" id="precioEditar" placeholder="Nuevo precio" />
+    <label>
+      <input type="checkbox" id="activoEditar" /> Activo
+    </label>
+    <button onclick="editarArticulo()">Editar</button>
     <div id="resultado">
       Esperando respuesta...
     </div>
+
   </div>
 
   <script>
-    async function llamarAPI() {
+    const apiUrl = "http://localhost:8000";
+
+    async function listarArticulos() {
       const resultado = document.getElementById("resultado");
 
       resultado.innerText = "Cargando...";
 
       try {
-        const response = await fetch("http://localhost:8000/articulos", {
+        const response = await fetch(`${apiUrl}/articulos`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json"
@@ -86,6 +119,107 @@
         const data = await response.json();
 
         resultado.innerText = JSON.stringify(data, null, 2);
+
+      } catch (error) {
+        resultado.innerText = "Error: " + error.message;
+      }
+    }
+    async function crearArticulo() {
+      const nombre = document.getElementById("nombreNuevo").value;
+      const precio = parseInt(document.getElementById("precioNuevo").value);
+      const activo = document.getElementById("activoNuevo").checked;
+      const resultado = document.getElementById("resultado");
+
+      if (!nombre || isNaN(precio) || precio < 500) {
+        alert("Complete todos los datos correctamente (Precio mayor a 500)");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiUrl}/articulos`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ nombre, precio, activo })
+        });
+
+        if (!response.ok) {
+          throw new Error("Error al crear el artículo");
+        }
+
+        const data = await response.json();
+
+        resultado.innerText = JSON.stringify(data, null, 2);
+
+        listarArticulos();
+
+      } catch (error) {
+        resultado.innerText = "Error: " + error.message;
+      }
+    }
+    async function borrarArticulo() {
+      const id = parseInt(document.getElementById("idBorrar").value);
+      const logico = document.getElementById("logicoBorrar").checked;
+      const resultado = document.getElementById("resultado");
+
+      if (isNaN(id)) {
+        alert("Ingrese un ID válido");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiUrl}/articulos/${id}?logico=${logico}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error("Error al borrar el artículo");
+        }
+
+        const data = await response.json();
+
+        resultado.innerText = JSON.stringify(data, null, 2);
+
+        listarArticulos();
+
+      } catch (error) {
+        resultado.innerText = "Error: " + error.message;
+      }
+    }
+    async function editarArticulo() {
+      const id = parseInt(document.getElementById("idEditar").value);
+      const nombre = document.getElementById("nombreEditar").value;
+      const precio = parseInt(document.getElementById("precioEditar").value);
+      const activo = document.getElementById("activoEditar").checked;
+      const resultado = document.getElementById("resultado");
+
+      if (isNaN(id) || id <= 0 || !nombre || isNaN(precio) || precio < 500) {
+        alert("Complete todos los datos correctamente (Precio mayor o igual a 500)");
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiUrl}/articulos/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ nombre, precio, activo })
+        });
+
+        if (!response.ok) {
+          throw new Error("Error al editar el artículo");
+        }
+
+        const data = await response.json();
+
+        resultado.innerText = JSON.stringify(data, null, 2);
+
+        listarArticulos();
 
       } catch (error) {
         resultado.innerText = "Error: " + error.message;
