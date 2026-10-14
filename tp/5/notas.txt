@@ -1,0 +1,15 @@
+1> python3 -m venv venv
+2> source venv/bin/activate
+3> pip list 
+4> pip install fastapi"[standard]"
+
+# Parámetro query-> /articulos?clave=valor&llave=valor
+# validacion para int
+# gt greater than : mayor que
+# ge greater or equal : >= que
+# lt less than : menor que
+# le less or equal : <= que
+# max_digits / min_digits
+# para str
+# min_length
+# max_length
